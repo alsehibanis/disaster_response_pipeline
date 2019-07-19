@@ -19,9 +19,24 @@ from sklearn.metrics import classification_report
 
 import re
 
+import pickle
+
 nltk.download(['punkt','wordnet','averaged_perceptron_tagger','stopwords'])
 
 def load_data(database_filepath):
+    """Loads the data from database
+    Parameters:
+    database_filepath : string
+        path of the database file
+    
+    Output:
+    X : numpy.ndarray
+        training data
+    Y : numpy.ndarray
+        labels of training data
+    category_names: list
+        list of the category names
+    """       
     engine = create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql_table('df', engine)
     X = df['message']
@@ -31,13 +46,30 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
-        stop_words = set(stopwords.words("english"))
-        text = re.sub(r'[^a-zA-Z0-9]',' ',text.lower())
-        tokens = word_tokenize(text)
-        tokens = [WordNetLemmatizer().lemmatize(word).lower().strip() for word in tokens if word not in stop_words]
-        return tokens
+    """Tokenize text
+    Parameters:
+    text : string
+        text to be tokenized
+    
+    Output:
+    tokens : list
+        list of tokens
+    """           
+    stop_words = set(stopwords.words("english"))
+    text = re.sub(r'[^a-zA-Z0-9]',' ',text.lower())
+    tokens = word_tokenize(text)
+    tokens = [WordNetLemmatizer().lemmatize(word).lower().strip() for word in tokens if word not in stop_words]
+    return tokens
 
 def build_model():
+    """build and optimize the model using grid search
+    Parameters:
+    None
+    
+    Output:
+    model : sklearn.model_selection._search.GridSearchCV
+        the optimized model
+    """               
     pipeline = Pipeline([
         ('text_pipeline', Pipeline([
             ('vect', CountVectorizer(tokenizer=tokenize)),
@@ -49,25 +81,48 @@ def build_model():
     ])
     
     parameters = {
-                  'clf__estimator__n_estimators': [10, 20], 
-              'clf__estimator__min_samples_split': [2, 3, 4]}
+              'clf__estimator__min_samples_split': [2, 3]}
 
 
     cv = GridSearchCV(pipeline, param_grid=parameters)
     return cv
 
-def evaluate_model(model, X_test, Y_test, category_names):
+def evaluate_model(model, X_test, Y_test, category_names ):
+    """Evaluate model performance
+    Parameters:
+    model : sklearn.model_selection._search.GridSearchCV
+        model to be evaluated
+    X_test : numpy.ndarray
+        test data
+    Y_test : numpy.ndarray
+        labels of test data         
+    category_names : list
+        list of categories names
+
+    Output:
+    None
+    """      
     y_pred=model.predict(X_test)
 
     for i, col in enumerate(Y_test.columns.values):
         print(col)
-        print(classification_report(list(y_test.loc[:,col]), y_pred[:,i]))    
+        print(classification_report(list(Y_test.loc[:,col]), y_pred[:,i]))    
     pass
 
 
 def save_model(model, model_filepath):
-    with open('model.pkl', 'wb') as file:
-        pickle.dump(pipeline_imp, file)
+    """Evaluate model performance
+    Parameters:
+    model : sklearn.model_selection._search.GridSearchCV
+        model to be saved
+    model_filepath : string
+        path to the save the model file
+    
+    Output:
+    None
+    """      
+    with open(model_filepath, 'wb') as file:
+        pickle.dump(model, file)
     pass
                     
 

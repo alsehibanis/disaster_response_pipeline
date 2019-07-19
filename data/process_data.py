@@ -1,3 +1,15 @@
+"""
+
+To execute script use:
+> python process_data.py disaster_messages.csv disaster_categories.csv DisasterResponse.db
+
+Arguments:
+    1) Messages in CSV file
+    2) Categories in CSV file
+    3) SQLite database destination
+"""
+
+
 import sys
 # import libraries
 import pandas as pd
@@ -6,12 +18,33 @@ import sqlalchemy
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
+    """Load data from two csv files into pandas dataframes and
+    merge them into one.
+    Parameters:
+    messages_filepath : string
+        path of the messages csv file
+    categories_filepath : string
+        path of the categories csv file
+    
+    Output:
+    df : pandas.DataFrame
+        The merged dataframe
+    """    
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     df = messages.merge(categories, on='id')
     return df
 
 def clean_data(df):
+    """Clean the data
+    Parameters:
+    df : pandas.DataFrame
+        dataframe to be processed
+    
+    Output:
+    df : pandas.DataFrame
+        The processed dataframe
+    """   
     categories = df['categories'].str.split(";", expand=True)
     row = categories.loc[0,:]
     category_colnames = row.apply(lambda x:x.split('-')[0])
@@ -31,6 +64,18 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
+    """Save the data
+    Parameters:
+    df : pandas.DataFrame
+        dataframe to be written
+    
+    database_filename: string
+        The filename of the database 
+   
+   Output:
+   None
+
+    """       
     engine = create_engine('sqlite:///' + database_filename)
     df.to_sql('df', engine, index=False)    
     pass  
