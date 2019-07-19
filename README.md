@@ -50,20 +50,20 @@ This project is part of Udacity's Data Science Nanodegree.  This project aims to
 <a name="screenshots"></a>
 ### Screenshots
 1.This screenshot shows an example of message classification:
-<img src='screenshot/ExampleOfMessageClassification.JPG' width="800" height="500" />
+<img src='screenshots/ExampleOfMessageClassification.JPG' width="800" height="500" />
 <br>
 
 2.This screenshot shows the distribution of message genres bar chart displayed by the appliation
-<img src='screenshot/DistributionOfGenres.JPG' width="800" height="500" />
+<img src='screenshots/DistributionOfGenres.JPG' width="800" height="500" />
 <br>
 
 3.This screenshot shows the distribution of top 10 message categories bar chart displayed by the
 appliation
-<img src='screenshot/Top10Categories.JPG' width="800" height="500" />
+<img src='screenshots/Top10Categories.JPG' width="800" height="500" />
 <br>
 
 
 4.This screenshot shows the distribution of message categories bar chart displayed by the
 appliation
-<img src='screenshot/DistributionOfCategories.JPG' width="800" height="500" />
+<img src='screenshots/DistributionOfCategories.JPG' width="800" height="500" />
 <br>
